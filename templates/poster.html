@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Fallback fonts: keep it simple; users can override in render via local CSS if needed */
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+  </style>
+</head>
+<body class="bg-[#F7F4EF]">
+  <div id="root" class="w-[1080px] h-[1920px] mx-auto px-12 pt-12 pb-10">
+    <!-- Header -->
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="text-5xl font-extrabold tracking-tight">
+          每天 <span class="text-[#D97706]">60s</span> 读懂世界
+        </div>
+        <div class="mt-3 text-2xl text-neutral-700" id="dateLine">2026年3月23日</div>
+        <div class="mt-1 text-lg text-neutral-500" id="lunarLine">农历 · （可选）</div>
+      </div>
+      <div class="text-7xl font-black tracking-widest text-neutral-800" id="weekday">星期一</div>
+    </div>
+
+    <!-- List -->
+    <div class="mt-10" id="list"></div>
+
+    <!-- Footer -->
+    <div class="absolute left-0 right-0 bottom-0 px-12 pb-10">
+      <div class="text-sm text-neutral-500" id="sources">来源：综合多家权威媒体</div>
+      <div class="mt-2 flex items-center justify-between text-sm text-neutral-400">
+        <div id="updatedAt">更新于：2026/03/23 08:00</div>
+        <div id="signature">@codexcn</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Payload is injected by Puppeteer via window.__PAYLOAD__
+    const p = window.__PAYLOAD__ || {};
+    const dateLine = document.getElementById('dateLine');
+    const lunarLine = document.getElementById('lunarLine');
+    const weekday = document.getElementById('weekday');
+    const list = document.getElementById('list');
+    const sources = document.getElementById('sources');
+    const updatedAt = document.getElementById('updatedAt');
+    const signature = document.getElementById('signature');
+
+    dateLine.textContent = p.date_cn || '';
+    lunarLine.textContent = p.lunar || '';
+    weekday.textContent = p.weekday_cn || '';
+    sources.textContent = p.sources_line || '';
+    updatedAt.textContent = p.updated_at || '';
+    signature.textContent = p.signature || '';
+
+    const items = Array.isArray(p.items) ? p.items : [];
+    const frag = document.createDocumentFragment();
+
+    items.slice(0, 15).forEach((it, idx) => {
+      const row = document.createElement('div');
+      row.className = 'flex gap-4 py-4 border-b border-neutral-200/70';
+
+      const badge = document.createElement('div');
+      badge.className = 'mt-1 w-8 h-8 rounded-full bg-neutral-200 text-neutral-600 flex items-center justify-center font-semibold';
+      badge.textContent = String(idx + 1);
+
+      const text = document.createElement('div');
+      text.className = 'text-[22px] leading-[34px] text-neutral-900 font-semibold';
+      text.textContent = (it && it.text) ? String(it.text) : '';
+
+      row.appendChild(badge);
+      row.appendChild(text);
+      frag.appendChild(row);
+    });
+
+    list.innerHTML = '';
+    list.appendChild(frag);
+  </script>
+</body>
+</html>

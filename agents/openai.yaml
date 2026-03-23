@@ -1,0 +1,5 @@
+interface:
+  display_name: "60s News Poster"
+  short_description: "生成类似\"每天60s读懂世界\"的新闻长图（含文字版引用 + 海报PNG）"
+  icon: "📰"
+  accent_color: "#D97706"
